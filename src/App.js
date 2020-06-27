@@ -1,24 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+// import CovidStateValues from './csv/CovidStateValues.csv';
+
+import SubBurst from './SunBurst/SunBurst';
+
+import CsvParse from '@vtex/react-csv-parse'
+import SunBurst from './SunBurst/SunBurst';
 
 function App() {
+  const [floridaValues, setFloridaValues] = useState([]);
+
+const results = [];
+  let csvFunc = (data) => {
+    let stateValues = [];
+    data.forEach(item => {
+      if (item.state === 'Florida' && item.county === 'Hillsborough' && item.cases <= 100) {
+        stateValues.push(item);
+      }
+    })
+    setFloridaValues(stateValues);
+  }
+  const keys = [
+    "date",
+    "county",
+    "state",
+    "fips",
+    "cases",
+    "deaths"
+  ]
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        Covid visualization app
       </header>
+      <CsvParse
+        keys={keys}
+        onDataUploaded={csvFunc}
+        render={onChange => <input type="file" onChange={onChange} />}
+      >
+      </CsvParse>
+      <section>
+        <button onClick={() => csvFunc()}>
+          Parse CSV
+        </button>
+      </section>
+      <div>
+        <SunBurst
+          pieData={floridaValues}
+          innerRadius={50}
+          outterRadius={0}
+        />
+      </div>
     </div>
   );
 }
