@@ -1,44 +1,35 @@
 import React, { useState } from 'react';
-import './App.css';
-// import CovidStateValues from './csv/CovidStateValues.csv';
-
 import Papa from 'papaparse';
 
-import SubBurst from './SunBurst/SunBurst';
-
-import CsvParse from '@vtex/react-csv-parse'
 import SunBurst from './SunBurst/SunBurst';
+import './App.css';
 
 function App() {
   const [covidValues, setCovidValues] = useState();
-  const [floridaValues, setFloridaValues] = useState([]);
+  const [filteredValues, setFilteredValues] = useState([]);
 
-
-  let csvFunc = (data) => {
+  let filterData = (data) => {
     let stateValues = [];
     data.forEach(item => {
-      if (item.state === 'Florida' && item.county === 'Hillsborough' && item.cases <= 100) {
+      if (item.state === 'Florida' && item.county === 'Hillsborough') {
         stateValues.push(item);
       }
     })
-    setFloridaValues(stateValues);
+    setFilteredValues(stateValues);
   }
 
-  const keys = [
-    "date",
-    "county",
-    "state",
-    "fips",
-    "cases",
-    "deaths"
-  ];
+  // CREATE ADDITIVE LIST FOR COUNTIES IN FLORIDA TO DISPLAY
+
+  // ADJUST DATA TO BE BASED ON A CERTAIN DAY USING REACT DATE PICKER, OR PARSE THROUGH AVAILABLE DATA
+
+  //SELECT OVER ALL STATE NUMBERS AND COMPARE STATES
+
+  // ADD IN STATE SELECT INPUT
 
   let updateData = ({data}) => {
-    csvFunc(data);
-    
+    filterData(data);
     setCovidValues(data);
   }
-
   
   let papaParse = () => {
     const dataFilePath = require('./csv/CovidStateValues.csv');
@@ -56,23 +47,13 @@ function App() {
       <header className="App-header">
         Covid visualization app
       </header>
-      <CsvParse
-        keys={keys}
-        onDataUploaded={csvFunc}
-        render={onChange => <input type="file" onChange={onChange} />}
-      >
-      </CsvParse>
-      <section>
-        <button onClick={() => csvFunc()}>
-          Parse CSV
-        </button>
-      </section>
+
       <button onClick={papaParse}>
         Papa Parse button
       </button>
       <div>
         <SunBurst
-          pieData={floridaValues}
+          pieData={filteredValues}
           innerRadius={50}
           outterRadius={0}
         />
