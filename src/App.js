@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
+import moment from 'moment';
 
 import SunBurst from './SunBurst/SunBurst';
+import { DateSelector } from './Components/DateSelector'
 import './App.css';
 
 function App() {
   const [covidValues, setCovidValues] = useState();
   const [filteredValues, setFilteredValues] = useState([]);
+  const [date, setDate] = useState(new Date('2020-03-02'));
+  const [formatedDate, setFormatedDate] = useState('2020-03-01');
+  // const [endDate, setEndDate] = useState('2020-06-15');
 
   let filterData = (data) => {
     let stateValues = [];
     data.forEach(item => {
-      if (item.state === 'Florida' && item.county === 'Hillsborough') {
+      // && item.county === 'Hillsborough'
+      if (item.state === 'Florida' && item.date == formatedDate) {
         stateValues.push(item);
       }
     })
     setFilteredValues(stateValues);
   }
 
-  // CREATE ADDITIVE LIST FOR COUNTIES IN FLORIDA TO DISPLAY
-
-  // ADJUST DATA TO BE BASED ON A CERTAIN DAY USING REACT DATE PICKER, OR PARSE THROUGH AVAILABLE DATA
-
-  //SELECT OVER ALL STATE NUMBERS AND COMPARE STATES
-
-  // ADD IN STATE SELECT INPUT
+  let dateFunction = (date) => {
+    setDate(date);
+    setFormatedDate(moment(date).format('YYYY-MM-DD').toString());
+  }
 
   let updateData = ({data}) => {
     filterData(data);
@@ -44,10 +47,17 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <div>
         Covid visualization app
-      </header>
-
+      </div>
+      <DateSelector
+        date={date}
+        setDate={setDate}
+        dateFunction={dateFunction}
+      />
+      <div>
+        {formatedDate}
+      </div>
       <button onClick={papaParse}>
         Papa Parse button
       </button>
