@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
 import moment from 'moment';
+import Select from 'react-select';
 
 import SunBurst from './SunBurst/SunBurst';
 import { DateSelector } from './Components/DateSelector'
@@ -17,7 +18,7 @@ function App() {
   let filterData = (data) => {
     let stateValues = [];
     let stateCounty = [];
-    data.forEach(item => {
+        data.forEach(item => {
       // && item.county === 'Hillsborough'
       if (item.state === 'Florida' && item.date == formatedDate) {
         stateValues.push(item);
@@ -26,8 +27,10 @@ function App() {
         stateCounty.push(item.county);
       }
     })
-    console.log('whatveryouwant',stateCounty);
+    
     setFilteredValues(stateValues);
+    stateCounty.sort();
+    console.log('whatveryouwant',stateCounty);
     setFloridaCountys(stateCounty);
   }
 
