@@ -14,14 +14,12 @@ function App() {
   const [date, setDate] = useState(new Date('2020-03-02'));
   const [formatedDate, setFormatedDate] = useState('2020-03-01');
   const [floridaCountys, setFloridaCountys] = useState({value:"Hillsborough", label:"Hillsborough"});
-  // const [endDate, setEndDate] = useState('2020-06-15');
 
   let filterData = (data) => {
     let stateValues = [];
     let stateCounty = [];
     let formatedSelectValues = [];
         data.forEach(item => {
-      // && item.county === 'Hillsborough'
       if (item.state === 'Florida' && item.date == formatedDate) {
         stateValues.push(item);
       }
@@ -35,7 +33,6 @@ function App() {
     formatedSelectValues.sort(function (a, b) {
       return a.value.localeCompare(b.value);
     });
-    console.log('whatveryouwant',stateCounty);
     setFloridaCountys(formatedSelectValues);
   }
 
