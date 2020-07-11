@@ -5,6 +5,7 @@ import Select from 'react-select';
 
 import SunBurst from './SunBurst/SunBurst';
 import { DateSelector } from './Components/DateSelector'
+import Menus from './Components/Menus'
 import './App.css';
 
 function App() {
@@ -12,12 +13,13 @@ function App() {
   const [filteredValues, setFilteredValues] = useState([]);
   const [date, setDate] = useState(new Date('2020-03-02'));
   const [formatedDate, setFormatedDate] = useState('2020-03-01');
-  const [floridaCountys, setFloridaCountys] = useState();
+  const [floridaCountys, setFloridaCountys] = useState({value:"Hillsborough", label:"Hillsborough"});
   // const [endDate, setEndDate] = useState('2020-06-15');
 
   let filterData = (data) => {
     let stateValues = [];
     let stateCounty = [];
+    let formatedSelectValues = [];
         data.forEach(item => {
       // && item.county === 'Hillsborough'
       if (item.state === 'Florida' && item.date == formatedDate) {
@@ -25,13 +27,16 @@ function App() {
       }
       if (item.state === 'Florida' && !stateCounty.includes(item.county)) {
         stateCounty.push(item.county);
+        formatedSelectValues.push({value:item.county, label:item.county})
       }
     })
     
     setFilteredValues(stateValues);
-    stateCounty.sort();
+    formatedSelectValues.sort(function (a, b) {
+      return a.value.localeCompare(b.value);
+    });
     console.log('whatveryouwant',stateCounty);
-    setFloridaCountys(stateCounty);
+    setFloridaCountys(formatedSelectValues);
   }
 
   let dateFunction = (date) => {
@@ -67,6 +72,11 @@ function App() {
       />
       <div>
         {formatedDate}
+      </div>
+      <div>
+        <Menus
+        stateCounty={floridaCountys}
+        />
       </div>
       <button onClick={papaParse}>
         Papa Parse button
