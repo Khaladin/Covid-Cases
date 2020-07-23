@@ -6,38 +6,56 @@ import SunBurst from './SunBurst/SunBurst';
 import { DateSelector } from './Components/DateSelector'
 import CountySelector from './Components/CountySelector'
 import './App.css';
+import StateSelector from './Components/StateSelector';
 
 function App() {
   // const [covidValues, setCovidValues] = useState();
   const [filteredValues, setFilteredValues] = useState([]);
   const [date, setDate] = useState(new Date('2020-03-02'));
   const [formatedDate, setFormatedDate] = useState('2020-03-01');
-  const [StateCountys, setStateCountys] = useState({value:"Hillsborough", label:"Hillsborough"});
+  const [stateCountys, setStateCountys] = useState({value:"Hillsborough", label:"Hillsborough"});
   const [selectedCountys, setSelectedCountys] = useState([{value:"Hillsborough", label:"Hillsborough"}]);
+  const [stateList, setStateList] = useState({value:"Florida", label:"Florida"})
+  const [selectedState, setSelectedState] = useState([{value:"Florida", label:"Florida"}]);
 
   let filterData = (data) => {
-    let stateValues = [];
+    let graphValues = [];
     let stateCounty = [];
     let formatedSelectValues = [];
+    let stateArr = [];
+    let formatedStateList = [];
     data.forEach(item => {
-      if (item.state === 'Florida' && !stateCounty.includes(item.county)) {
+      if (!stateArr.includes(item.state)) {
+        stateArr.push(item.state);
+        formatedStateList.push({value:item.state, label:item.state})
+      }
+      if (item.state === selectedState[0].value && !stateCounty.includes(item.county)) {
           stateCounty.push(item.county);
           formatedSelectValues.push({value:item.county, label:item.county})     
       }
-      if (item.state === 'Florida' && item.date == formatedDate) {
+      if (item.state === selectedState[0].value && item.date == formatedDate) {
         selectedCountys.forEach(county => {
           if (item.county === county.value) {
-            stateValues.push(item);
+            graphValues.push(item);
           }
         })
       }
     })
     
-    setFilteredValues(stateValues);
+    setFilteredValues(graphValues);
+
     formatedSelectValues.sort(function (a, b) {
       return a.value.localeCompare(b.value);
     });
+
     setStateCountys(formatedSelectValues);
+
+    formatedStateList = formatedStateList.sort(function (a, b) {
+      return a.value.localeCompare(b.value);
+    });
+    setStateList(formatedStateList);
+    
+
   }
 
   let dateFunction = (date) => {
@@ -48,15 +66,25 @@ function App() {
   let updateData = ({data}) => {
     filterData(data);
   }
+
+  let parseCountyList = ({data}) => {
+    let selectedCountyList = [];
+    data.forEach( item => {
+      //if (!selectedCountyList.includes(item.county)) {
+        //selectedCountyList.push(item.county)
+      }
+    })
+    return selectedCountyList;
+  }
   
-  let papaParse = () => {
+  let papaParse = (completeFunction) => {
     const dataFilePath = require('./csv/CovidStateValues.csv');
     Papa.parse(dataFilePath, {
       download: true,
       header: true,
       delimiter: ",",
       newline: ",",
-      complete: updateData
+      complete: completeFunction
     })
   }
 
@@ -73,12 +101,21 @@ function App() {
         {formatedDate}
       </div>
       <div>
+        <StateSelector
+          stateList={stateList}
+          setSelectedCountys={setSelectedCountys}
+          setSelectedState={setSelectedState}
+          //papaParse={papaParse(parseCountyList)}
+        />
+      </div>
+      <div>
         <CountySelector
-        stateCounty={StateCountys}
+        stateCounty={stateCountys}
+        selectedCountys={selectedCountys}
         setSelectedCountys={setSelectedCountys}
         />
       </div>
-      <button onClick={papaParse}>
+      <button onClick={papaParse(updateData)}>
         Papa Parse button
       </button>
       <div>

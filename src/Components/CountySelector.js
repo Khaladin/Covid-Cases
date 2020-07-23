@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 
-function CountySelector({stateCounty, setSelectedCountys}) {
+function CountySelector({stateCounty, setSelectedCountys, selectedCountys}) {
    let handleSelect = (values) => {
-    console.log("we now know", values)   
+    console.log("we now know", values)
+    if (values === null) {
+      values = [];
+    }   
     setSelectedCountys(values)
    }
+   console.log(stateCounty)
     return( 
     <Select
-      defaultValue={stateCounty}
+      value={selectedCountys}
       isMulti
       name="County"
       options={stateCounty}
