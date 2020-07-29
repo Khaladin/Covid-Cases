@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import Papa from 'papaparse';
-import moment from 'moment';
+import React, { useState } from 'react'
+import Papa from 'papaparse'
+import moment from 'moment'
 
-import SunBurst from './SunBurst/SunBurst';
+import SunBurst from './SunBurst/SunBurst'
 import { DateSelector } from './Components/DateSelector'
 import CountySelector from './Components/CountySelector'
 import './App.css';
-import StateSelector from './Components/StateSelector';
+import StateSelector from './Components/StateSelector'
+import StandardInput from './Components/Teach-InputEvents'
 
 function App() {
   // const [covidValues, setCovidValues] = useState();
@@ -70,21 +71,21 @@ function App() {
   let parseCountyList = ({data}) => {
     let selectedCountyList = [];
     data.forEach( item => {
-      //if (!selectedCountyList.includes(item.county)) {
-        //selectedCountyList.push(item.county)
+      if (!selectedCountyList.includes(item.county)) {
+        selectedCountyList.push(item.county)
       }
     })
     return selectedCountyList;
   }
   
-  let papaParse = (completeFunction) => {
+  let papaParse = (functionToRunOnComplete) => {
     const dataFilePath = require('./csv/CovidStateValues.csv');
     Papa.parse(dataFilePath, {
       download: true,
       header: true,
       delimiter: ",",
       newline: ",",
-      complete: completeFunction
+      complete: functionToRunOnComplete
     })
   }
 
@@ -115,7 +116,7 @@ function App() {
         setSelectedCountys={setSelectedCountys}
         />
       </div>
-      <button onClick={papaParse(updateData)}>
+      <button onClick={() => papaParse(updateData)}>
         Papa Parse button
       </button>
       <div>
@@ -123,6 +124,10 @@ function App() {
           pieData={filteredValues}
           innerRadius={50}
           outterRadius={0}
+        />
+      </div>
+      <div>
+        <StandardInput
         />
       </div>
     </div>
