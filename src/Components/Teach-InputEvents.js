@@ -35,7 +35,6 @@ function StandardInput({ }) {
                 //onChange={(event) => setFormValue({password: event.target.value, userName: formValues.userName})}
                 onChange={(event) => handleChange(event, 'firstName')}
             />
-            {console.log("learing", {...formValues})}
         </div>
     )
 }

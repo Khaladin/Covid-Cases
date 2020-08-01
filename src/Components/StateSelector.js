@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 
-function StateSelector({stateList, setSelectedState, setSelectedCountys, papaParse}) {
+function StateSelector({stateList, setSelectedState, setStateCountys, papaParse, setSelectedCountys}) {
    let handleSelect = (values) => {
-    console.log("we now know", values)
-    papaParse();
-    setSelectedCountys([]);  
+    let handleData = (papaParseData) => {
+      let countyArr = [];
+      let formatedCountyArr = []
+      papaParseData.data.forEach(item => {
+        if (values.value === item.state) {
+          if (!countyArr.includes(item.county)) {
+            formatedCountyArr.push({value: item.county, label: item.county})
+            countyArr.push(item.county)
+          }
+        }
+      })
+      setStateCountys(formatedCountyArr)
+    }
+    papaParse(handleData)
     setSelectedState(values)
+    setSelectedCountys([])
     
    }
-   console.log(stateList);
     return( 
     <Select
       defaultValue={stateList}

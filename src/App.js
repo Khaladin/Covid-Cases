@@ -17,7 +17,7 @@ function App() {
   const [stateCountys, setStateCountys] = useState({value:"Hillsborough", label:"Hillsborough"});
   const [selectedCountys, setSelectedCountys] = useState([{value:"Hillsborough", label:"Hillsborough"}]);
   const [stateList, setStateList] = useState({value:"Florida", label:"Florida"})
-  const [selectedState, setSelectedState] = useState([{value:"Florida", label:"Florida"}]);
+  const [selectedState, setSelectedState] = useState({value:"Florida", label:"Florida"});
 
   let filterData = (data) => {
     let graphValues = [];
@@ -30,11 +30,11 @@ function App() {
         stateArr.push(item.state);
         formatedStateList.push({value:item.state, label:item.state})
       }
-      if (item.state === selectedState[0].value && !stateCounty.includes(item.county)) {
+      if (item.state === selectedState.value && !stateCounty.includes(item.county)) {
           stateCounty.push(item.county);
           formatedSelectValues.push({value:item.county, label:item.county})     
       }
-      if (item.state === selectedState[0].value && item.date == formatedDate) {
+      if (item.state === selectedState.value && item.date == formatedDate) {
         selectedCountys.forEach(county => {
           if (item.county === county.value) {
             graphValues.push(item);
@@ -104,9 +104,10 @@ function App() {
       <div>
         <StateSelector
           stateList={stateList}
-          setSelectedCountys={setSelectedCountys}
+          setStateCountys={setStateCountys}
           setSelectedState={setSelectedState}
-          //papaParse={papaParse(parseCountyList)}
+          setSelectedCountys={setSelectedCountys}
+          papaParse={papaParse}
         />
       </div>
       <div>
@@ -116,7 +117,7 @@ function App() {
         setSelectedCountys={setSelectedCountys}
         />
       </div>
-      <button onClick={() => papaParse(updateData)}>
+      <button disabled={selectedCountys.length? false : true} onClick={() => papaParse(updateData)}>
         Papa Parse button
       </button>
       <div>
